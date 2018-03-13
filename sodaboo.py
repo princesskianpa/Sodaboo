@@ -1,7 +1,6 @@
 ###Sodaboo 0.0.3
 ##
 #
-
 import selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -14,10 +13,14 @@ import time
 from imgsearch import *
 import sys
 
-
-USERNAME = ""
-PASSWORD = ""
-SERVER = "de3"
+print('Hello & welcome to Sodaboo :)')
+print('Type in E-mail:')
+USERNAME = str(input())
+print('Type in Password:')
+PASSWORD = str(input())
+print('Type in Server for example "de3" WITHOUT->"<- :')
+SERVER = str(input())
+print("Starting...")
 
 driver = webdriver.Firefox()
 driver.get("https://www.soldatenspiel.de/")
@@ -330,18 +333,26 @@ def training_wa():
             driver.find_element_by_xpath('//*[@id="element_0005"]').click() #click back to main menu
             time.sleep(2)
     except NoSuchElementException:
+        credits = driver.find_element_by_class_name('credits-js ').text.replace('.', '')
         driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[24]/div').click() #click on Übungsplatz
         time.sleep(2)
         driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[24]/div').click() #click on HIBA
         time.sleep(2)
         driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[2]/div[2]/div[1]/div[2]/div[4]/div[3]').click() #click Wachausbildung +
         time.sleep(2)
-        driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[2]/div[2]/div[2]/form/div/div[2]').click() #click Ausbildung starten
-        time.sleep(2)
-        driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[4]/div[2]').click() #click dismiss
-        time.sleep(2)
-        driver.find_element_by_xpath('//*[@id="element_0005"]').click() #click back to main menu
-        time.sleep(2)
+        traincost = driver.find_element_by_class_name('style-basic-float-right style-basic-fontweight-bold drill-price-js').text
+        if int(traincost) >= int(credits):
+            driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[2]/div[2]/div[2]/form/div/div[2]').click() #click Ausbildung starten
+            time.sleep(2)
+            driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[4]/div[2]').click() #click dismiss
+            time.sleep(2)
+            driver.find_element_by_xpath('//*[@id="element_0005"]').click() #click back to main menu
+            time.sleep(2)
+        else:
+            time.sleep(2)
+            driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[4]/div[2]').click() #click dismiss
+            time.sleep(2)
+            driver.find_element_by_xpath('//*[@id="element_0005"]').click() #click back to main menu
 
 ##Events
 def bombenwetter():
