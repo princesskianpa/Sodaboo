@@ -1,7 +1,4 @@
 ###This here is from drov0 found it by accident while googling python stuff.
-##
-#
-
 import cv2
 import numpy as np
 import pyautogui

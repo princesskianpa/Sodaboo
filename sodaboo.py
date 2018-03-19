@@ -1,6 +1,4 @@
-###Sodaboo 0.0.3
-##
-#
+###Sodaboo 0.0.4
 import selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -25,20 +23,17 @@ print("Starting...")
 driver = webdriver.Firefox()
 driver.get("https://www.soldatenspiel.de/")
 
-#driver.minimize_window()
-#driver.maximize_window()
-
 #Find & select Server
 select = Select(driver.find_element_by_name('server'))
 select.select_by_visible_text(SERVER)
 
 #Type in Username
-elem = driver.find_element_by_name("email")
+elem = driver.find_element_by_name('email')
 elem.clear()
 elem.send_keys(USERNAME)
 
 #Type in password
-passy = driver.find_element_by_name("password")
+passy = driver.find_element_by_name('password')
 passy.clear()
 passy.send_keys(PASSWORD)
 
@@ -46,22 +41,27 @@ passy.send_keys(PASSWORD)
 elem.send_keys(Keys.RETURN)
 time.sleep(7)
 
-#Things I might need somewhen...
-#ausdauer = driver.find_element_by_id('stamina-bar-js').text.replace('/', '') #Stamina
-#credits = driver.find_element_by_class_name('credits-js ').text.replace('.', '') #Credits
-#cost = driver.find_element_by_css_selector('.content-stamina-credit-button > p:nth-child(3)').text.replace('.', '') #Stamina cost
-#rage = driver.find_element_by_id('rage-bar-js').text.replace('/', '') #Rage
-#freeticket = driver.find_element_by_class_name('freefight_count').text.replace('/', '') # Free Fight tickets
+#Small captcha Coordinates
+x1 = 909
+y1 = 609
+x2 = 991
+y2 = 656
+
+#Solve Area captcha Coordinates
+x3 = 0
+y3 = 0
+x4 = 1216
+y4 = 544
 
 #Login check
 try:
     name = driver.find_element_by_class_name("avatar-name").text
-    print ("Sucessfull logged in as "+ name +".")
+    print ("Sucessfull logged in as ", name ,".")
 except :
     print("Cannot verify to be logged in.")
 
 
-##Check for elements
+#Check for elements
 def patro():
     try:
         patro = driver.find_element_by_css_selector('#progress-work-team-icon')
@@ -73,6 +73,7 @@ def patro():
     except NoSuchElementException:
         print('error patro')
 
+
 def missi():
     try:
         missi = driver.find_element_by_css_selector('#progress-mission-icon')
@@ -83,6 +84,7 @@ def missi():
             mission()
     except NoSuchElementException:
         print('error missi')
+
 
 def daily():
     try:
@@ -100,6 +102,7 @@ def daily():
     except NoSuchElementException:
         print('Daily error.')
 
+
 def train():
     try:
         train = driver.find_element_by_css_selector('#progress-drill-icon')
@@ -111,6 +114,7 @@ def train():
     except NoSuchElementException:
         print('error train')
 
+
 def popup():
     for x in range (3):
         try:
@@ -118,7 +122,8 @@ def popup():
             time.sleep(.1)
         except NoSuchElementException:
             pass
-            #print("No popup found")
+
+
 def close():
     for x in range (2):
         try:
@@ -126,7 +131,8 @@ def close():
             time.sleep(.1)
         except :
             pass
-            #print("No Close button found")
+
+
 def bombe():
     try:
         bombe = driver.find_element_by_css_selector('#progress-event-artillerie-icon')
@@ -134,6 +140,7 @@ def bombe():
             bombenwetter()
     except NoSuchElementException:
         print('error bombenwetter event is not active.')
+
 
 def compi():
     try:
@@ -146,7 +153,8 @@ def compi():
     except NoSuchElementException:
         print('error compi')
 
-##Patrouille & Mission & Training
+
+#Patrouille & Mission & Training
 def patrouille():
     time.sleep(2)
     driver.find_element_by_css_selector('div.control-icon:nth-child(4)').click() #click @ your troop
@@ -158,15 +166,14 @@ def patrouille():
     try:
         if driver.find_element_by_css_selector('.content-captcha-image-wrapper > img:nth-child(2)'):
             driver.maximize_window()
-            time.sleep(.5)
-            captcha = region_grabber(region=(909, 609, 991, 656))   
+            time.sleep(2)
+            captcha = region_grabber(region=(x1, y1, x2, y2))   
             captcha.save('captcha.png')
-            pos = imagesearcharea('captcha.png', 0, 0, 1216, 544)
+            pos = imagesearcharea('captcha.png', x3, y3, x4, y4)
             if pos[0] != -1:
                 print("Patro Captcha Position : ", pos[0], pos[1])
                 pyautogui.moveTo(pos[0], pos[1])
                 pyautogui.click()
-                #driver.minimize_window()
                 time.sleep(2)
                 driver.find_element_by_css_selector('#modalbox-main > div:nth-child(1) > div:nth-child(4) > div:nth-child(2)').click() #close patrouille
                 time.sleep(2)
@@ -178,6 +185,7 @@ def patrouille():
         time.sleep(2)
         driver.find_element_by_css_selector('div.control-icon:nth-child(4)').click() #back to main menu
         time.sleep(2)
+
 
 def mission():
     ausdauer = driver.find_element_by_id('stamina-bar-js').text.replace('/', '') #Ausdauer
@@ -193,17 +201,16 @@ def mission():
                 driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[2]/div[2]/div[2]/form/div/div[2]/p').click() #start mission button
                 ###Captcha###
                 try:
-                    if driver.find_element_by_css_selector('.content-captcha-image-wrapper > img:nth-child(2)'):                                    ######## EDIT CONTENT
+                    if driver.find_element_by_css_selector('.content-captcha-image-wrapper > img:nth-child(2)'):                           
                         driver.maximize_window()
-                        time.sleep(.5)
-                        captcha = region_grabber(region=(909, 609, 991, 656))   #Get small Captcha
+                        time.sleep(2)
+                        captcha = region_grabber(region=(x1, y1, x2, y2))   
                         captcha.save('captcha.png')
-                        pos = imagesearcharea('captcha.png', 0, 0, 1216, 544)
+                        pos = imagesearcharea('captcha.png', x3, y3, x4, y4)
                         if pos[0] != -1:
                             print("Mission Captcha Position : ", pos[0], pos[1])
                             pyautogui.moveTo(pos[0], pos[1])
                             pyautogui.click()
-                            #driver.minimize_window()
                             time.sleep(2)
                             driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[4]/div[2]').click() # Close Mission
                             time.sleep(2)
@@ -223,17 +230,16 @@ def mission():
                     driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[2]/div[2]/div[2]/form/div/div[2]/p').click() #start mission button
                     ###Captcha###
                     try:
-                        if driver.find_element_by_css_selector('.content-captcha-image-wrapper > img:nth-child(2)'):                                    ######## EDIT CONTENT
+                        if driver.find_element_by_css_selector('.content-captcha-image-wrapper > img:nth-child(2)'):                      
                             driver.maximize_window()
-                            time.sleep(.5)
-                            captcha = region_grabber(region=(909, 609, 991, 656))   #Get small Captcha
+                            time.sleep(2)
+                            captcha = region_grabber(region=(x1, y1, x2, y2))   
                             captcha.save('captcha.png')
-                            pos = imagesearcharea('captcha.png', 0, 0, 1216, 544)
+                            pos = imagesearcharea('captcha.png', x3, y3, x4, y4)
                             if pos[0] != -1:
                                 print("Mission Captcha Position : ", pos[0], pos[1])
                                 pyautogui.moveTo(pos[0], pos[1])
                                 pyautogui.click()
-                                #driver.minimize_window()
                                 time.sleep(2)
                                 driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[4]/div[2]').click() # Close Mission
                                 time.sleep(2)
@@ -252,17 +258,16 @@ def mission():
                         driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[2]/div[2]/div[2]/form/div/div[2]/p').click() #start mission button
                         ###Captcha###
                         try:
-                            if driver.find_element_by_css_selector('.content-captcha-image-wrapper > img:nth-child(2)'):                                    ######## EDIT CONTENT
+                            if driver.find_element_by_css_selector('.content-captcha-image-wrapper > img:nth-child(2)'):                       
                                 driver.maximize_window()
-                                time.sleep(.5)
-                                captcha = region_grabber(region=(909, 609, 991, 656))   #Get small Captcha
+                                time.sleep(2)
+                                captcha = region_grabber(region=(x1, y1, x2, y2))   
                                 captcha.save('captcha.png')
-                                pos = imagesearcharea('captcha.png', 0, 0, 1216, 544)
+                                pos = imagesearcharea('captcha.png', x3, y3, x4, y4)
                                 if pos[0] != -1:
                                     print("Mission Captcha Position : ", pos[0], pos[1])
                                     pyautogui.moveTo(pos[0], pos[1])
                                     pyautogui.click()
-                                    #driver.minimize_window()
                                     time.sleep(2)
                                     driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[4]/div[2]').click() # Close Mission
                                     time.sleep(2)
@@ -277,17 +282,16 @@ def mission():
                     time.sleep(2)
                     ###Captcha###
                     try:
-                        if driver.find_element_by_css_selector('.content-captcha-image-wrapper > img:nth-child(2)'):                                    ######## EDIT CONTENT
+                        if driver.find_element_by_css_selector('.content-captcha-image-wrapper > img:nth-child(2)'):                                 
                                 driver.maximize_window()
-                                time.sleep(.5)
-                                captcha = region_grabber(region=(909, 609, 991, 656))   #Get small Captcha
+                                time.sleep(2)
+                                captcha = region_grabber(region=(x1, y1, x2, y2))   
                                 captcha.save('captcha.png')
-                                pos = imagesearcharea('captcha.png', 0, 0, 1216, 544)
+                                pos = imagesearcharea('captcha.png', x3, y3, x4, y4)
                                 if pos[0] != -1:
                                     print("Mission Captcha Position : ", pos[0], pos[1])
                                     pyautogui.moveTo(pos[0], pos[1])
                                     pyautogui.click()
-                                    #driver.minimize_window()
                                     time.sleep(2)
                                     driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[4]/div[2]').click() # Close Mission
                                     time.sleep(2)
@@ -312,6 +316,7 @@ def mission():
             if int(cost) > int(credits):
                 driver.find_element_by_css_selector('#modalbox-sub > div:nth-child(1) > div:nth-child(4) > div:nth-child(3)').click() #Close not enough money
             time.sleep(2)
+
 #training contains messy code
 def training_wa():
     time.sleep(2)
@@ -341,7 +346,7 @@ def training_wa():
         driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[2]/div[2]/div[1]/div[2]/div[4]/div[3]').click() #click Wachausbildung +
         time.sleep(2)
         traincost = driver.find_element_by_class_name('style-basic-float-right style-basic-fontweight-bold drill-price-js').text
-        if int(traincost) >= int(credits):
+        if int(traincost) <= int(credits):
             driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[2]/div[2]/div[2]/form/div/div[2]').click() #click Ausbildung starten
             time.sleep(2)
             driver.find_element_by_xpath('/html/body/div/div[1]/div/div[5]/div[12]/div[1]/div[4]/div[2]').click() #click dismiss
@@ -376,27 +381,30 @@ def bombenwetter():
         pass
 
 ##Companion
-#companion_attack not implemented (Doesn't work...)
+#companion_attack not implemented (Buggy)
 def companion_attack():
     driver.find_element_by_css_selector('.companionarena').click() #click on arena
     time.sleep(2)
-    freeticket = driver.find_element_by_class_name('freefight_count').text.replace("/", "") # get free fights
-    for x in range (6):
-        if int(freeticket) >= 15:
+    freeticket = driver.find_element_by_class_name('freefight_count').text
+    while freeticket != "0 / 5":
+        freeticket = driver.find_element_by_class_name('freefight_count').text
+        if freeticket != "0 / 5":
             select = Select(driver.find_element_by_name('filter'))
-            select.select_by_value(1)
-            driver.find_element_by_css_selector('.style-button-filter') #click on filter
+            select.select_by_value("1")
+            driver.find_element_by_css_selector('.style-button-filter').click() #click on filter
+            time.sleep(3)
+            driver.find_element_by_css_selector('.style-button-middle').click() #click on attack
+            time.sleep(3)
+            driver.find_element_by_css_selector('.fight-force-js > div:nth-child(2)').click() #click on überspringen
+            time.sleep(3)
+            driver.find_element_by_css_selector('.div.style-contentbox-child:nth-child(3) > form:nth-child(2) > div:nth-child(1) > div:nth-child(2)').click() #click on continue
+            time.sleep(3)
+            driver.find_element_by_css_selector('.style-button-confirm').click() # Doesn't click on Ok ?????
             time.sleep(2)
-            driver.find_element_by_css_selector('.style-button-middle') #click on attack
-            time.sleep(1)
-            driver.find_element_by_css_selector('.fight-force-js > div:nth-child(2)') #click on überspringen
-            time.sleep(2)
-            driver.find_element_by_css_selector('.div.style-contentbox-child:nth-child(3) > form:nth-child(2) > div:nth-child(1) > div:nth-child(2)') #click on continue
-            time.sleep(2)
-            driver.find_element_by_css_selector('.style-button-confirm') # click on Ok
         else:
-            driver.find_element_by_css_selector('#modalbox-main > div:nth-child(1) > div:nth-child(4) > div:nth-child(2)') # click on close
+            driver.find_element_by_css_selector('#modalbox-main > div:nth-child(1) > div:nth-child(4) > div:nth-child(2)').click() # click on close
             time.sleep(2)
+
 
 def companion_train():
     time.sleep(2)
@@ -409,15 +417,14 @@ def companion_train():
     try:
         if driver.find_element_by_css_selector('.content-captcha-image-wrapper > img:nth-child(2)'):
             driver.maximize_window()
-            time.sleep(.5)
-            captcha = region_grabber(region=(909, 609, 991, 656))   
+            time.sleep(2)
+            captcha = region_grabber(region=(x1, y1, x2, y2))   
             captcha.save('captcha.png')
-            pos = imagesearcharea('captcha.png', 0, 0, 1216, 544)
+            pos = imagesearcharea('captcha.png', x3, y3, x4, y4)
             if pos[0] != -1:
                 print("Companion Training Captcha Position : ", pos[0], pos[1])
                 pyautogui.moveTo(pos[0], pos[1])
                 pyautogui.click()
-                #driver.minimize_window()
                 time.sleep(2)
                 driver.find_element_by_css_selector('#modalbox-main > div:nth-child(1) > div:nth-child(4) > div:nth-child(2)').click() #close companion training
                 time.sleep(2)
@@ -430,13 +437,14 @@ def companion_train():
         driver.find_element_by_css_selector('div.control-icon:nth-child(6)').click() #back to main menu
         time.sleep(2)
 
+
 if __name__=='__main__':
     while 1:
         try:
             popup()
             daily()
             missi()
-            #patro()
+            patro()
             train()
             bombe()
             compi()
@@ -449,5 +457,5 @@ if __name__=='__main__':
                 time.sleep(1)
                 close()
             except (ElementNotInteractableException, ElementNotInteractableException, TimeoutException, ElementClickInterceptedException):
-                print("Another Error, =/")
+                print("Impossible to land here.")
                 close()
