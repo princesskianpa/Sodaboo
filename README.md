@@ -28,7 +28,7 @@ tested only with "Luftwaffe" game layout.
 
 
 # Questions? Suggestions? Need someone to talk to?
-princesskianpa ADD gmail.com       :)
+Email Removed.       :)
 
 # ToDo
 1. Auto train lowest tactics.
